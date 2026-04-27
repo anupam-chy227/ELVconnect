@@ -23,28 +23,28 @@ export const listInvoices = async (req: Request, res: Response, next: NextFuncti
 
 export const getInvoice = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const invoice = await invoiceService.getInvoice(req.params.id, req.user!._id);
+    const invoice = await invoiceService.getInvoice(str(req.params.id), req.user!._id);
     res.status(200).json({ success: true, data: { invoice } });
   } catch (error) { next(error); }
 };
 
 export const updateStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const invoice = await invoiceService.updateInvoiceStatus(req.params.id, req.user!._id, req.body.status);
+    const invoice = await invoiceService.updateInvoiceStatus(str(req.params.id), req.user!._id, req.body.status);
     res.status(200).json({ success: true, data: { invoice } });
   } catch (error) { next(error); }
 };
 
 export const recordPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const invoice = await invoiceService.recordPayment(req.params.id, req.user!._id, req.body);
+    const invoice = await invoiceService.recordPayment(str(req.params.id), req.user!._id, req.body);
     res.status(200).json({ success: true, data: { invoice } });
   } catch (error) { next(error); }
 };
 
 export const deleteInvoice = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await invoiceService.deleteInvoice(req.params.id, req.user!._id);
+    const result = await invoiceService.deleteInvoice(str(req.params.id), req.user!._id);
     res.status(200).json({ success: true, data: result });
   } catch (error) { next(error); }
 };
