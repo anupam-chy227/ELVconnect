@@ -1,0 +1,50 @@
+import { Request, Response, NextFunction } from 'express';
+import * as invoiceService from './invoice.service';
+
+const str = (v: string | string[] | undefined): string => (Array.isArray(v) ? v[0] : v) ?? '';
+
+export const createInvoice = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const invoice = await invoiceService.createInvoice(req.user!._id, req.body);
+    res.status(201).json({ success: true, data: { invoice } });
+  } catch (error) { next(error); }
+};
+
+export const listInvoices = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await invoiceService.listInvoices(req.user!._id, {
+      status: str(req.query.status as string | string[]),
+      page: Number(req.query.page) || 1,
+      limit: Number(req.query.limit) || 20,
+    });
+    res.status(200).json({ success: true, ...result });
+  } catch (error) { next(error); }
+};
+
+export const getInvoice = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const invoice = await invoiceService.getInvoice(req.params.id, req.user!._id);
+    res.status(200).json({ success: true, data: { invoice } });
+  } catch (error) { next(error); }
+};
+
+export const updateStatus = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const invoice = await invoiceService.updateInvoiceStatus(req.params.id, req.user!._id, req.body.status);
+    res.status(200).json({ success: true, data: { invoice } });
+  } catch (error) { next(error); }
+};
+
+export const recordPayment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const invoice = await invoiceService.recordPayment(req.params.id, req.user!._id, req.body);
+    res.status(200).json({ success: true, data: { invoice } });
+  } catch (error) { next(error); }
+};
+
+export const deleteInvoice = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await invoiceService.deleteInvoice(req.params.id, req.user!._id);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) { next(error); }
+};
